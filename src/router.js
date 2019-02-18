@@ -1,8 +1,32 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
+import store from "./store/store";
+import Login from "./views/Login.vue";
+import Quiz from "./views/Quiz";
 
 Vue.use(Router);
+
+const ifNotAuthenticated = (to, from, next) => {
+  if (!store.getters.isAuthenticated) {
+    console.log("ifNot");
+    next();
+    return;
+  }
+  next("/quiz");
+};
+
+const ifAuthenticated = (to, from, next) => {
+  console.log([to, from]);
+  if (store.getters.isAuthenticated) {
+    if (to.path === "/quiz") {
+      next();
+      return;
+    }
+    next("/quiz");
+    return;
+  }
+  next("/login");
+};
 
 export default new Router({
   mode: "history",
@@ -10,17 +34,31 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home
+      beforeEnter: ifAuthenticated,
     },
     {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
+      path: "/login",
+      name: "login",
+      component: Login,
+      beforeEnter: ifNotAuthenticated,
+    },
+    {
+      path: "/quiz",
+      name: "quiz",
+      component: Quiz,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: "/quiz/:id",
+      name: "quizDetail",
+      component: Quiz,
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: "/results",
+      name: "results",
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
-    }
-  ]
+        import(/* webpackChunkName: "about" */ "./views/Results.vue"),
+    },
+  ],
 });
