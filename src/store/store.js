@@ -14,8 +14,10 @@ export default new Vuex.Store({
     users: [],
     quizQuestions: [],
     currentUser: {},
+    userAnswers: [],
     token: localStorage.getItem('user-token') || null,
     isFetching: false,
+    questionType: 'frontend',
   },
   getters: {
     isAuthenticated: state => !!state.token,
@@ -35,7 +37,7 @@ export default new Vuex.Store({
       state.token = null;
     },
     SET_QUESTIONS(state, { questions }) {
-      state.quizQuestions = [...questions];
+      state.quizQuestions = { ...questions };
     },
     SET_FETCHING(state) {
       state.isFetching = true;
@@ -90,11 +92,24 @@ export default new Vuex.Store({
       commit('SET_TOKEN', usersRef.id);
     },
     async getQuestions({ commit, rootState }) {
-      const questionsRef = await rootState.db.collection('questions').get();
-      let questions = [];
-      questionsRef.forEach(q => questions.push(q.data()));
-      commit('SET_QUESTIONS', { questions });
+      const fQuestionsRef = await rootState.db
+        .collection('frontendQuestions')
+        .get();
+      const bQuestionsRef = await rootState.db
+        .collection('backendQuestions')
+        .get();
+      let fquestions = [];
+      let bquestions = [];
+      fQuestionsRef.forEach(q => fquestions.push(q.data()));
+      bQuestionsRef.forEach(q => bquestions.push(q.data()));
+      commit('SET_QUESTIONS', {
+        questions: { frontend: fquestions, backend: bquestions },
+      });
       commit('DONE_FETCHING');
+    },
+    selectVariant({ commit }, answerData) {
+      // TODO: POST complex data to Firestore
+      commit('SET_USER_ANSWER_DATA', answerData);
     },
   },
   modules: {

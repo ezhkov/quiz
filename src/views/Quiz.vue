@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     <div v-if="isFetching">Loading...</div>
     <QuizWizard
-      :questions="quizQuestions"
+      :questions="quizQuestions[questionType]"
       :initialNumber="currentUser.lastQuestion"
       v-else
     />
@@ -20,7 +20,13 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(['quizQuestions', 'currentUser', 'token', 'isFetching']),
+    ...mapState([
+      'quizQuestions',
+      'currentUser',
+      'token',
+      'isFetching',
+      'questionType',
+    ]),
   },
   components: {
     QuizWizard,

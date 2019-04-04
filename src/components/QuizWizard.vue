@@ -1,5 +1,11 @@
 <template>
-  <QuizStep :question="questions[questionNumber]" />
+  <div>
+    <QuizStep
+      :question="questions[questionNumber]"
+      @changeVariant="changeVariant"
+    />
+    <button @click="submitStep" :disabled="!activeStepVariant">Click</button>
+  </div>
 </template>
 
 <script>
@@ -7,14 +13,31 @@ import { mapState } from 'vuex';
 import QuizStep from './QuizStep';
 export default {
   name: 'QuizWizard',
-  props: ['questions'],
+  props: ['questions', 'questionType'],
   data() {
     return {
       questionNumber: 0,
+      activeStepVariant: null,
     };
   },
   computed: {
     ...mapState(['currentUser', 'token']),
+  },
+  methods: {
+    changeVariant(value) {
+      this.activeStepVariant = { ...value };
+    },
+    submitStep(e) {
+      e.preventDefault();
+      if (!this.activeStepVariant) return;
+      this.$store.dispatch('selectVariant', {
+        answer: this.activeStepVariant,
+        lastQuestion: this.questionNumber,
+        timeFinished: new Date(),
+      });
+      this.questionNumber++;
+      this.activeStepVariant = null;
+    },
   },
   components: {
     QuizStep,

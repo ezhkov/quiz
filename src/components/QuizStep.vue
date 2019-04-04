@@ -6,7 +6,7 @@
     <div class="quiz-variants">
       <label
         class="quiz-variant"
-        v-for="variant in question.variants"
+        v-for="variant in shuffledVariants"
         :key="variant.text"
       >
         <input
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import shuffleArray from '@/utils/functions';
 export default {
   name: 'QuizStep',
   props: ['question'],
@@ -30,8 +31,16 @@ export default {
       checkedVariant: {},
     };
   },
-  methods: {
-    submitVariant() {},
+  computed: {
+    shuffledVariants() {
+      return shuffleArray(this.question.variants);
+    },
+  },
+  methods: {},
+  watch: {
+    checkedVariant(value) {
+      this.$emit('changeVariant', { ...value, level: this.question.level });
+    },
   },
 };
 </script>
