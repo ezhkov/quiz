@@ -1,14 +1,23 @@
 <template>
-  <div>
-    This is a Quiz
-  </div>
+  <QuizStep :question="questions[questionNumber]" />
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import QuizStep from './QuizStep';
 export default {
-  name: "QuizWizard",
-  props: {
-    questionNumber: String,
+  name: 'QuizWizard',
+  props: ['questions'],
+  data() {
+    return {
+      questionNumber: 0,
+    };
+  },
+  computed: {
+    ...mapState(['currentUser', 'token']),
+  },
+  components: {
+    QuizStep,
   },
 };
 </script>
