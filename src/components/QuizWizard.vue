@@ -5,6 +5,16 @@
       @changeVariant="changeVariant"
     />
     <button @click="submitStep" :disabled="!activeStepVariant">Click</button>
+    <div class="quiz-helpers">
+      <button
+        @click="useHelper(helper.key, $event)"
+        :key="helper.key"
+        v-for="helper in availableHelpers"
+        :disabled="!helper.isAvailable"
+      >
+        {{ helper.name }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -16,12 +26,11 @@ export default {
   props: ['questions', 'questionType'],
   data() {
     return {
-      questionNumber: 0,
       activeStepVariant: null,
     };
   },
   computed: {
-    ...mapState(['currentUser', 'token']),
+    ...mapState(['currentUser', 'token', 'questionNumber', 'availableHelpers']),
   },
   methods: {
     changeVariant(value) {
@@ -30,13 +39,17 @@ export default {
     submitStep(e) {
       e.preventDefault();
       if (!this.activeStepVariant) return;
+      this.$store.commit('UPDATE_QUESTION_NUMBER', this.questionNumber + 1);
       this.$store.dispatch('selectVariant', {
         answer: this.activeStepVariant,
         lastQuestion: this.questionNumber,
-        timeFinished: new Date(),
+        timeCompleted: new Date(),
       });
-      this.questionNumber++;
       this.activeStepVariant = null;
+    },
+    useHelper(key, e) {
+      e.preventDefault();
+      this.$store.dispatch('useHelper', { key });
     },
   },
   components: {

@@ -4,6 +4,7 @@ import Firebase from 'firebase/app';
 import 'firebase/firestore';
 import user from './modules/user';
 import config from './firebaseConfig';
+import shuffleArray from '@/utils/functions';
 
 Firebase.initializeApp(config);
 Vue.use(Vuex);
@@ -15,9 +16,32 @@ export default new Vuex.Store({
     quizQuestions: [],
     currentUser: {},
     userAnswers: [],
+    availableHelpers: {
+      fifty: {
+        key: 'fifty',
+        name: '50/50',
+        isAvailable: true,
+      },
+      mistake: {
+        key: 'mistake',
+        name: 'Право на ошибку',
+        isAvailable: true,
+      },
+      call: {
+        key: 'call',
+        name: 'Звонок другу',
+        isAvailable: true,
+      },
+    },
     token: localStorage.getItem('user-token') || null,
     isFetching: false,
     questionType: 'frontend',
+    questionNumber: 0,
+    multipliers: {
+      EASY: 1,
+      MEDIUM: 1,
+      HARD: 2,
+    },
   },
   getters: {
     isAuthenticated: state => !!state.token,
@@ -44,6 +68,27 @@ export default new Vuex.Store({
     },
     DONE_FETCHING(state) {
       state.isFetching = false;
+    },
+    UPDATE_USER_SCORE(state, score) {
+      state.currentUser.score = score;
+    },
+    UPDATE_QUESTION_NUMBER(state, number) {
+      state.questionNumber = number;
+    },
+    UPDATE_HELPERS(state, data) {
+      state.availableHelpers[data.key].isAvailable = data.value;
+    },
+    REMOVE_HALF_VARIANTS(state) {
+      const questionVariants =
+        state.quizQuestions[state.questionType][state.questionNumber].variants;
+      let newVariants = [questionVariants.find(el => el.isValid)];
+      const invalidVariants = shuffleArray(
+        questionVariants.filter(el => !el.isValid),
+      );
+      newVariants.push(invalidVariants.pop());
+      state.quizQuestions[state.questionType][state.questionNumber].variants = [
+        ...shuffleArray(newVariants),
+      ];
     },
   },
   actions: {
@@ -98,18 +143,70 @@ export default new Vuex.Store({
       const bQuestionsRef = await rootState.db
         .collection('backendQuestions')
         .get();
-      let fquestions = [];
-      let bquestions = [];
-      fQuestionsRef.forEach(q => fquestions.push(q.data()));
-      bQuestionsRef.forEach(q => bquestions.push(q.data()));
+      const fquestions = [];
+      const hardFQuestions = [];
+      const bquestions = [];
+      const hardBQuestions = [];
+      fQuestionsRef.forEach(q => {
+        const question = q.data();
+        if (question.level === 'HARD') {
+          hardFQuestions.push({ ...question, id: q.id });
+        } else {
+          fquestions.push({ ...question, id: q.id });
+        }
+      });
+      bQuestionsRef.forEach(q => {
+        const question = q.data();
+        if (question.level === 'HARD') {
+          hardBQuestions.push({ ...question, id: q.id });
+        } else {
+          bquestions.push({ ...question, id: q.id });
+        }
+      });
+      const hardQuestions = {
+        frontend: shuffleArray(hardFQuestions),
+        backend: shuffleArray(hardBQuestions),
+      };
+      const notHardQuestions = {
+        frontend: shuffleArray(fquestions),
+        backend: shuffleArray(bquestions),
+      };
+      const preparedQuestions = {
+        frontend: shuffleArray([
+          ...notHardQuestions.frontend.slice(0, 12),
+          ...hardQuestions.frontend.slice(0, 3),
+        ]),
+        backend: shuffleArray([
+          ...notHardQuestions.backend.slice(0, 12),
+          ...hardQuestions.backend.slice(0, 3),
+        ]),
+      };
       commit('SET_QUESTIONS', {
-        questions: { frontend: fquestions, backend: bquestions },
+        questions: preparedQuestions,
       });
       commit('DONE_FETCHING');
     },
-    selectVariant({ commit }, answerData) {
+    async selectVariant({ commit, rootState }, answerData) {
+      const { answer, lastQuestion, timeCompleted } = answerData;
       // TODO: POST complex data to Firestore
-      commit('SET_USER_ANSWER_DATA', answerData);
+      const score =
+        rootState.currentUser.score +
+        (answer.isValid ? rootState.multipliers[answer.level] : 0);
+      await rootState.db
+        .collection('users')
+        .doc(rootState.token)
+        .update({
+          score,
+          lastQuestion,
+          timeCompleted,
+        });
+      commit('UPDATE_USER_SCORE', score);
+    },
+    useHelper({ commit }, { key }) {
+      if (key === 'fifty') {
+        commit('REMOVE_HALF_VARIANTS');
+      }
+      commit('UPDATE_HELPERS', { key, value: false });
     },
   },
   modules: {

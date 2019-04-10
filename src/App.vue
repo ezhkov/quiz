@@ -1,8 +1,15 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/results">Results</router-link>
+    <div class="header">
+      <div class="username">
+        Пользователь {{ currentUser.username }} ({{ currentUser.email }}) ({{
+          currentUser.score
+        }})
+      </div>
+      <div id="nav">
+        <router-link to="/">Home</router-link> |
+        <router-link to="/results">Results</router-link>
+      </div>
     </div>
     <router-view />
   </div>
@@ -60,5 +67,16 @@ export default {
       color: #42b983;
     }
   }
+}
+.header {
+  position: relative;
+}
+.username {
+  position: absolute;
+  left: 0;
+  top: 30px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: bold;
 }
 </style>

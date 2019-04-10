@@ -11,6 +11,10 @@ if (token) {
   axios.defaults.headers.common['Authorization'] = token;
 }
 
+window.onbeforeunload = function() {
+  return 'aaa';
+};
+
 new Vue({
   router,
   store,

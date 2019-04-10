@@ -13,7 +13,7 @@ export default {
     ...mapState(['users']),
   },
   created() {
-    this.$store.dispatch('getUsers');
+    if (!this.users.length) this.$store.dispatch('getUsers');
   },
 };
 </script>
