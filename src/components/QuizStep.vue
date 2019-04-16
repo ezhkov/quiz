@@ -69,6 +69,7 @@ export default {
   padding-left: 40px;
   position: relative;
   margin-bottom: 12px;
+  padding-right: 10px;
   input {
     position: absolute;
     left: 0;

@@ -17,18 +17,41 @@
           @doneCountdown="doneCountown"
           :question="questions[questionNumber]"
         />
-        <div class="quiz-helpers">
+        <div class="quiz-buttons">
           <button
-            @click="useHelper(helper.key, $event)"
-            :key="helper.key"
-            v-for="helper in availableHelpers"
-            :disabled="!helper.isAvailable"
+            class="helper-trigger"
+            :class="{ active: showHelpers }"
+            :disabled="!hasAvailableHelpers"
+            @click="triggerHelpers"
           >
-            {{ helper.name }}
+            Помощь
           </button>
           <button @click="submitStep" :disabled="!activeStepVariant">
             Вопрос {{ questionNumber + 2 }}
           </button>
+        </div>
+      </div>
+      <div
+        class="quiz-helpers-overlay"
+        v-if="showHelpers"
+        @click="triggerHelpers"
+      ></div>
+      <div class="quiz-helpers" v-if="showHelpers">
+        <div class="quiz-helpers-inner">
+          <div class="quiz-header">
+            <div class="quiz-close-icon" @click="triggerHelpers"></div>
+          </div>
+          <hr />
+          <div class="quiz-helpers-body">
+            <button
+              @click="useHelper(helper.key, $event)"
+              :key="helper.key"
+              v-for="helper in availableHelpers"
+              :disabled="!helper.isAvailable"
+            >
+              {{ helper.name }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -46,6 +69,7 @@ export default {
   data() {
     return {
       activeStepVariant: null,
+      showHelpers: false,
     };
   },
   computed: {
@@ -56,6 +80,9 @@ export default {
       'availableHelpers',
       'canMistake',
     ]),
+    hasAvailableHelpers() {
+      return Object.values(this.availableHelpers).find(el => el.isAvailable);
+    },
   },
   methods: {
     changeVariant(value) {
@@ -85,6 +112,9 @@ export default {
     useHelper(key, e) {
       e.preventDefault();
       this.$store.dispatch('useHelper', { key });
+    },
+    triggerHelpers() {
+      this.showHelpers = !this.showHelpers;
     },
   },
   components: {
@@ -149,6 +179,14 @@ a {
   height: 19px;
   float: right;
 }
+.quiz-close-icon {
+  margin: 1px 0;
+  background: url('../assets/close.gif') 50% 50% no-repeat;
+  width: 21px;
+  height: 19px;
+  float: right;
+  cursor: pointer;
+}
 
 hr {
   height: 1px;
@@ -191,5 +229,63 @@ button {
   padding-bottom: 6px;
   padding-left: 6px;
   padding-right: 6px;
+}
+.helper-trigger {
+  margin-right: 10px;
+  &.active {
+    border-bottom: 1px solid #dedede;
+    border-right: 1px solid #dedede;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    box-shadow: inset 1px 0 0 0 #7b7b7b, inset 0 1px 0 0 #7b7b7b;
+  }
+}
+
+.quiz-helpers-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #000;
+  opacity: 0.6;
+}
+
+.quiz-helpers {
+  position: absolute;
+  width: 260px;
+  left: 50%;
+  margin-left: -130px;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  background: #bdbdbd;
+  border: 1px solid;
+  border-top-color: #dfdfdf;
+  border-left-color: #dfdfdf;
+  border-right-color: #000;
+  border-bottom-color: #000;
+}
+
+.quiz-helpers-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  border: 1px solid;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+}
+
+.quiz-helpers-body {
+  display: flex;
+  flex-direction: column;
+  margin: 12px;
+
+  button + button {
+    margin-top: 30px;
+  }
 }
 </style>

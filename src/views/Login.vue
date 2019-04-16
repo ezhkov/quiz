@@ -48,6 +48,7 @@ export default {
     },
     async login() {
       const { email, username, phone } = this;
+      this.isLoggingIn = true;
       const userId = await this.$store.dispatch('findUser', {
         email,
         username,

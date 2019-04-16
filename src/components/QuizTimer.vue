@@ -1,5 +1,5 @@
 <template>
-  <div>{{ timerCount }}</div>
+  <div class="countdown">{{ timerCount }}</div>
 </template>
 
 <script>
@@ -8,7 +8,7 @@ export default {
   props: ['question'],
   data() {
     return {
-      timerCount: 60,
+      timerCount: 59,
       timerInterval: null,
     };
   },
@@ -36,4 +36,12 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.countdown {
+  border-bottom: 1px solid #dedede;
+  border-right: 1px solid #dedede;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  box-shadow: inset 1px 0 0 0 #7b7b7b, inset 0 1px 0 0 #7b7b7b;
+}
+</style>
