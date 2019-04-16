@@ -143,43 +143,38 @@ export default new Vuex.Store({
       const bQuestionsRef = await rootState.db
         .collection('backendQuestions')
         .get();
-      const fquestions = [];
-      const hardFQuestions = [];
-      const bquestions = [];
-      const hardBQuestions = [];
+      const questions = {
+        frontend: {},
+        backend: {},
+      };
+      const sliceQuestions = (arr, count) => {
+        return arr.slice(0, count);
+      };
+      const prepareQuestions = arr => {
+        return ['EASY', 'MEDIUM', 'HARD'].reduce((acc, curr) => {
+          return [
+            ...acc,
+            ...sliceQuestions(shuffleArray(arr[curr]), curr === 'HARD' ? 3 : 6),
+          ];
+        }, []);
+      };
+
       fQuestionsRef.forEach(q => {
         const question = q.data();
-        if (question.level === 'HARD') {
-          hardFQuestions.push({ ...question, id: q.id });
-        } else {
-          fquestions.push({ ...question, id: q.id });
-        }
+        if (!questions.frontend[question.level])
+          questions.frontend[question.level] = [];
+        questions.frontend[question.level].push({ ...question, id: q.id });
       });
       bQuestionsRef.forEach(q => {
         const question = q.data();
-        if (question.level === 'HARD') {
-          hardBQuestions.push({ ...question, id: q.id });
-        } else {
-          bquestions.push({ ...question, id: q.id });
-        }
+        if (!questions.backend[question.level])
+          questions.backend[question.level] = [];
+        questions.backend[question.level].push({ ...question, id: q.id });
       });
-      const hardQuestions = {
-        frontend: shuffleArray(hardFQuestions),
-        backend: shuffleArray(hardBQuestions),
-      };
-      const notHardQuestions = {
-        frontend: shuffleArray(fquestions),
-        backend: shuffleArray(bquestions),
-      };
+
       const preparedQuestions = {
-        frontend: shuffleArray([
-          ...notHardQuestions.frontend.slice(0, 12),
-          ...hardQuestions.frontend.slice(0, 3),
-        ]),
-        backend: shuffleArray([
-          ...notHardQuestions.backend.slice(0, 12),
-          ...hardQuestions.backend.slice(0, 3),
-        ]),
+        frontend: prepareQuestions(questions.frontend),
+        backend: prepareQuestions(questions.backend),
       };
       commit('SET_QUESTIONS', {
         questions: preparedQuestions,
