@@ -6,7 +6,7 @@
     <div class="quiz-variants">
       <label
         class="quiz-variant"
-        v-for="variant in shuffledVariants"
+        v-for="(variant, index) in shuffledVariants"
         :key="variant.text"
       >
         <input
@@ -15,7 +15,7 @@
           v-model="checkedVariant"
           :value="variant"
         />
-        {{ variant.text }}
+        <span class="quiz-letter">{{ letters[index] }}:</span>{{ variant.text }}
       </label>
     </div>
   </div>
@@ -29,6 +29,7 @@ export default {
   data() {
     return {
       checkedVariant: {},
+      letters: ['А', 'В', 'Б', 'Г'],
     };
   },
   computed: {
@@ -36,7 +37,6 @@ export default {
       return shuffleArray(this.question.variants);
     },
   },
-  methods: {},
   watch: {
     checkedVariant(value) {
       this.$emit('changeVariant', { ...value, level: this.question.level });
@@ -46,4 +46,38 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.quiz-question {
+  text-align: left;
+}
+
+.quiz-variants {
+  padding: 20px 20px 8px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  border: 1px solid grey;
+  box-shadow: inset 1px 0 0 0 #dedede, inset 0 1px 0 0 #dedede,
+    0 1px 0 0 #dedede, 1px 0 0 0 #dedede;
+}
+
+.quiz-variant {
+  display: block;
+  text-align: left;
+  padding-left: 40px;
+  position: relative;
+  margin-bottom: 12px;
+  input {
+    position: absolute;
+    left: 0;
+    top: 3px;
+  }
+}
+
+.quiz-letter {
+  position: absolute;
+  margin-left: -20px;
+}
+</style>

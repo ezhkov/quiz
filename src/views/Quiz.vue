@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <div v-if="isFetching">Loading...</div>
+    <div v-if="isFetching || !currentUser">Loading...</div>
     <QuizWizard
       :questions="quizQuestions[questionType]"
       :initialNumber="currentUser.lastQuestion"
@@ -32,13 +32,7 @@ export default {
     QuizWizard,
   },
   created() {
-    // this.$store.dispatch('getCurrentUser', this.token).then(() => {
-    //   if (this.currentUser.hasCompleted) {
-    //     this.$router.push('/results');
-    //   } else {
-    //     this.$store.dispatch('getQuestions');
-    //   }
-    // });
+    this.$store.dispatch('getQuestions');
   },
 };
 </script>

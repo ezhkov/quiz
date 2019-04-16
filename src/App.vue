@@ -1,26 +1,23 @@
 <template>
   <div id="app">
-    <div class="header">
-      <div class="username">
-        Пользователь {{ currentUser.username }} ({{ currentUser.email }}) ({{
-          currentUser.score
-        }})
-      </div>
-      <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/results">Results</router-link>
-      </div>
-    </div>
     <router-view />
+    <div class="debug" v-if="isDebug">
+      Пользователь {{ currentUser.username }} ({{ currentUser.email }}) ({{
+        currentUser.score
+      }})
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import { AUTH_LOGOUT } from '@/store/actions/auth';
 import { mapState } from 'vuex';
 
 export default {
+  data() {
+    return {
+      isDebug: false,
+    };
+  },
   computed: mapState([
     {
       isAuthorized: state => state.auth.isAuthorized,
@@ -29,34 +26,37 @@ export default {
     'currentUser',
   ]),
   created: function() {
-    axios.interceptors.response.use(undefined, function(err) {
-      return new Promise(() => {
-        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-          // if you ever get an unauthorized, logout the user
-          this.$store.dispatch(AUTH_LOGOUT);
-          // you can also redirect to /login if needed !
+    if (this.token) {
+      this.$store.dispatch('getCurrentUser', this.token).then(() => {
+        if (this.currentUser.hasCompleted) {
+          this.$router.push('/results');
         }
-        throw err;
       });
-    });
-    this.$store.dispatch('getCurrentUser', this.token).then(() => {
-      if (this.currentUser.hasCompleted) {
-        this.$router.push('/results');
-      } else {
-        this.$store.dispatch('getQuestions');
-      }
-    });
+    }
   },
 };
 </script>
 
 <style lang="scss">
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  height: 100vh;
+  width: 100vw;
+}
+body {
+  height: 100%;
+  overflow: hidden;
+}
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: Tahoma, sans-serif;
   text-align: center;
-  color: #2c3e50;
+  color: #000000;
+  height: 100%;
+  font-size: 14px;
+  line-height: 18px;
 }
 #nav {
   padding: 30px;
@@ -67,6 +67,15 @@ export default {
       color: #42b983;
     }
   }
+}
+.debug {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+  padding: 10px;
 }
 .header {
   position: relative;

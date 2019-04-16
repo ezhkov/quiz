@@ -16,6 +16,7 @@ export default new Vuex.Store({
     quizQuestions: [],
     currentUser: {},
     userAnswers: [],
+    canMistake: false,
     availableHelpers: {
       fifty: {
         key: 'fifty',
@@ -29,7 +30,7 @@ export default new Vuex.Store({
       },
       call: {
         key: 'call',
-        name: 'Звонок другу',
+        name: 'Помощь зала',
         isAvailable: true,
       },
     },
@@ -90,14 +91,21 @@ export default new Vuex.Store({
         ...shuffleArray(newVariants),
       ];
     },
+    CAN_MISTAKE(state) {
+      state.canMistake = true;
+    },
+    USE_MISTAKE(state) {
+      state.canMistake = false;
+    },
   },
   actions: {
     async findUser({ commit, dispatch, rootState }, user) {
-      const usersRef = rootState.db.collection('users');
-      const query = await usersRef.where('email', '==', user.email).get();
+      const usersRef = await rootState.db.collection('users');
+      const query = await usersRef.where('phone', '==', user.phone).get();
       if (query.empty) {
         console.log('User not exists');
-        dispatch('addUser', user);
+        const userId = await dispatch('addUser', user);
+        return await dispatch('getCurrentUser', userId);
       } else {
         console.log('User exists. Logging in');
         const foundUser = query.docs[0];
@@ -106,6 +114,7 @@ export default new Vuex.Store({
           user: foundUser.data(),
           token: foundUser.id,
         });
+        return foundUser.id;
       }
     },
     async getCurrentUser({ commit, rootState }, userId) {
@@ -118,6 +127,7 @@ export default new Vuex.Store({
         user: user.data(),
         token: userId,
       });
+      return user.data();
     },
     async getUsers({ commit, rootState }) {
       const usersRef = await rootState.db.collection('users').get();
@@ -135,6 +145,7 @@ export default new Vuex.Store({
       const usersRef = await rootState.db.collection('users').add(userToAdd);
       localStorage.setItem('user-token', usersRef.id);
       commit('SET_TOKEN', usersRef.id);
+      return usersRef.id;
     },
     async getQuestions({ commit, rootState }) {
       const fQuestionsRef = await rootState.db
@@ -200,6 +211,9 @@ export default new Vuex.Store({
     useHelper({ commit }, { key }) {
       if (key === 'fifty') {
         commit('REMOVE_HALF_VARIANTS');
+      }
+      if (key === 'mistake') {
+        commit('CAN_MISTAKE');
       }
       commit('UPDATE_HELPERS', { key, value: false });
     },
