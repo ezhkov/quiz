@@ -16,6 +16,7 @@
     "vue": "^2.5.22",
     "vue-imask": "^4.1.5",
     "vue-router": "^3.0.1",
+    "vue-simple-markdown": "^1.0.9",
     "vuefire": "^1.4.5",
     "vuex": "^3.0.1"
   },

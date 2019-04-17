@@ -17,6 +17,8 @@ export default new Vuex.Store({
     currentUser: {},
     userAnswers: [],
     canMistake: false,
+    gameFailed: false,
+    gameFinished: false,
     availableHelpers: {
       fifty: {
         key: 'fifty',
@@ -96,6 +98,19 @@ export default new Vuex.Store({
     },
     USE_MISTAKE(state) {
       state.canMistake = false;
+    },
+    DISABLE_HELPERS(state) {
+      ['fifty', 'mistake', 'call'].forEach(
+        el => (state.availableHelpers[el].isAvailable = false),
+      );
+    },
+    COMPLETE_USER_GAME(state, status) {
+      state.currentUser.hasCompleted = true;
+      if (status) {
+        state.gameFinished = true;
+      } else {
+        state.gameFailed = true;
+      }
     },
   },
   actions: {
@@ -216,6 +231,16 @@ export default new Vuex.Store({
         commit('CAN_MISTAKE');
       }
       commit('UPDATE_HELPERS', { key, value: false });
+    },
+    async finishGame({ commit, rootState }, status) {
+      await rootState.db
+        .collection('users')
+        .doc(rootState.token)
+        .update({
+          hasCompleted: true,
+          timeCompleted: new Date(),
+        });
+      commit('COMPLETE_USER_GAME', status);
     },
   },
   modules: {

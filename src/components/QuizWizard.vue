@@ -2,21 +2,21 @@
   <div class="quiz">
     <div class="quiz-inner">
       <div class="quiz-header">
-        Вопрос №{{ questionNumber + 1 }}
+        <template v-if="!gameFinished">
+          Вопрос №{{ questionNumber + 1 }}
+        </template>
+        <template v-else>
+          Конец
+        </template>
         <div class="quiz-header-icons"></div>
       </div>
       <hr />
-      <div class="quiz-body">
-        <QuizStep
-          :question="questions[questionNumber]"
-          @changeVariant="changeVariant"
-        />
+      <div class="quiz-body" :class="{ 'no-padding': gameFinished }">
+        <QuizStep :question="questions[questionNumber]" @changeVariant="changeVariant" v-if="!gameFinished" />
+        <GameSuccess v-if="gameFinished" />
       </div>
-      <div class="quiz-footer">
-        <QuizTimer
-          @doneCountdown="doneCountown"
-          :question="questions[questionNumber]"
-        />
+      <div class="quiz-footer" v-if="!gameFinished">
+        <QuizTimer @doneCountdown="doneCountown" :question="questions[questionNumber]" />
         <div class="quiz-buttons">
           <button
             class="helper-trigger"
@@ -27,33 +27,18 @@
             Помощь
           </button>
           <button @click="submitStep" :disabled="!activeStepVariant">
-            Вопрос {{ questionNumber + 2 }}
+            <template v-if="questionNumber < 14">
+              Вопрос {{ questionNumber + 2 }}
+            </template>
+            <template v-else>
+              Завершить
+            </template>
           </button>
         </div>
       </div>
-      <div
-        class="quiz-helpers-overlay"
-        v-if="showHelpers"
-        @click="triggerHelpers"
-      ></div>
-      <div class="quiz-helpers" v-if="showHelpers">
-        <div class="quiz-helpers-inner">
-          <div class="quiz-header">
-            <div class="quiz-close-icon" @click="triggerHelpers"></div>
-          </div>
-          <hr />
-          <div class="quiz-helpers-body">
-            <button
-              @click="useHelper(helper.key, $event)"
-              :key="helper.key"
-              v-for="helper in availableHelpers"
-              :disabled="!helper.isAvailable"
-            >
-              {{ helper.name }}
-            </button>
-          </div>
-        </div>
-      </div>
+      <div class="quiz-helpers-overlay" v-if="showHelpers || gameFailed" @click="triggerHelpers"></div>
+      <Helpers :availableHelpers="availableHelpers" :showHelpers="showHelpers" @triggerHelpers="triggerHelpers" />
+      <GameFailed :game-failed="gameFailed" />
     </div>
   </div>
 </template>
@@ -62,6 +47,9 @@
 import { mapState } from 'vuex';
 import QuizStep from './QuizStep';
 import QuizTimer from './QuizTimer';
+import Helpers from './popups/Helpers';
+import GameFailed from './popups/GameFailed';
+import GameSuccess from './popups/GameSuccess';
 
 export default {
   name: 'QuizWizard',
@@ -79,6 +67,8 @@ export default {
       'questionNumber',
       'availableHelpers',
       'canMistake',
+      'gameFinished',
+      'gameFailed',
     ]),
     hasAvailableHelpers() {
       return Object.values(this.availableHelpers).find(el => el.isAvailable);
@@ -89,15 +79,19 @@ export default {
       this.activeStepVariant = { ...value };
     },
     doneCountown() {
-      console.log('Countdown finished!');
-      // this.$router.push('/results');
+      this.$store.commit('DISABLE_HELPERS');
+      this.$store.dispatch('finishGame', false);
     },
     submitStep(e) {
       e.preventDefault();
       if (!this.activeStepVariant) return;
       if (this.activeStepVariant.isValid || this.canMistake) {
         this.$store.commit('USE_MISTAKE');
-        this.$store.commit('UPDATE_QUESTION_NUMBER', this.questionNumber + 1);
+        if (this.questionNumber === 14) {
+          this.$store.dispatch('finishGame', true);
+        } else {
+          this.$store.commit('UPDATE_QUESTION_NUMBER', this.questionNumber + 1);
+        }
         this.$store.dispatch('selectVariant', {
           answer: this.activeStepVariant,
           lastQuestion: this.questionNumber,
@@ -105,26 +99,118 @@ export default {
         });
         this.activeStepVariant = null;
       } else {
-        console.log('invalid!');
-        // this.$router.push('/results');
+        this.$store.commit('DISABLE_HELPERS');
+        this.$store.dispatch('finishGame', false);
       }
     },
-    useHelper(key, e) {
-      e.preventDefault();
-      this.$store.dispatch('useHelper', { key });
-    },
     triggerHelpers() {
+      if (this.gameFailed) return;
       this.showHelpers = !this.showHelpers;
     },
   },
   components: {
     QuizStep,
     QuizTimer,
+    Helpers,
+    GameFailed,
+    GameSuccess,
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+.vue-simple-markdown__inline-code {
+  padding: 3px;
+  background: #d6d6d6;
+  border: 1px solid #949494;
+  border-radius: 2px;
+}
+.hljs {
+  padding: 10px;
+  background: #d6d6d6;
+  border: 1px solid #949494;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/*
+
+Darcula color scheme from the JetBrains family of IDEs
+
+*/
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: #2b2b2b;
+}
+
+.hljs {
+  color: #bababa;
+}
+
+.hljs-strong,
+.hljs-emphasis {
+  color: #a8a8a2;
+}
+
+.hljs-bullet,
+.hljs-quote,
+.hljs-link,
+.hljs-number,
+.hljs-regexp,
+.hljs-literal {
+  color: #6896ba;
+}
+
+.hljs-code,
+.hljs-selector-class {
+  color: #a6e22e;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-section,
+.hljs-attribute,
+.hljs-name,
+.hljs-variable {
+  color: #cb7832;
+}
+
+.hljs-params {
+  color: #b9b9b9;
+}
+
+.hljs-string {
+  color: #6a8759;
+}
+
+.hljs-subst,
+.hljs-type,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-symbol,
+.hljs-selector-id,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-addition {
+  color: #e0c46c;
+}
+
+.hljs-comment,
+.hljs-deletion,
+.hljs-meta {
+  color: #7f7f7f;
+}
+</style>
 <style scoped lang="scss">
 h3 {
   margin: 40px 0 0;
@@ -179,14 +265,6 @@ a {
   height: 19px;
   float: right;
 }
-.quiz-close-icon {
-  margin: 1px 0;
-  background: url('../assets/close.gif') 50% 50% no-repeat;
-  width: 21px;
-  height: 19px;
-  float: right;
-  cursor: pointer;
-}
 
 hr {
   height: 1px;
@@ -203,6 +281,10 @@ hr {
   margin-left: 2px;
   margin-right: 2px;
   padding: 20px;
+  &.no-padding {
+    padding: 0;
+    flex: 1;
+  }
 }
 
 .quiz-footer {
@@ -249,43 +331,5 @@ button {
   bottom: 0;
   background: #000;
   opacity: 0.6;
-}
-
-.quiz-helpers {
-  position: absolute;
-  width: 260px;
-  left: 50%;
-  margin-left: -130px;
-  top: 100px;
-  display: flex;
-  flex-direction: column;
-  background: #bdbdbd;
-  border: 1px solid;
-  border-top-color: #dfdfdf;
-  border-left-color: #dfdfdf;
-  border-right-color: #000;
-  border-bottom-color: #000;
-}
-
-.quiz-helpers-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  border: 1px solid;
-  border-top-color: #fff;
-  border-left-color: #fff;
-  border-right-color: #808080;
-  border-bottom-color: #808080;
-}
-
-.quiz-helpers-body {
-  display: flex;
-  flex-direction: column;
-  margin: 12px;
-
-  button + button {
-    margin-top: 30px;
-  }
 }
 </style>

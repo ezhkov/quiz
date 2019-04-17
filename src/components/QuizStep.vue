@@ -1,7 +1,7 @@
 <template>
   <div class="quiz-step">
     <div class="quiz-question">
-      {{ question.question }}
+      <vue-simple-markdown :source="question.question"></vue-simple-markdown>
     </div>
     <div class="quiz-variants">
       <label
@@ -15,7 +15,8 @@
           v-model="checkedVariant"
           :value="variant"
         />
-        <span class="quiz-letter">{{ letters[index] }}:</span>{{ variant.text }}
+        <span class="quiz-letter">{{ letters[index] }}:</span>
+        <vue-simple-markdown :source="variant.text"></vue-simple-markdown>
       </label>
     </div>
   </div>
@@ -57,7 +58,6 @@ export default {
   margin-bottom: 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
   border: 1px solid grey;
   box-shadow: inset 1px 0 0 0 #dedede, inset 0 1px 0 0 #dedede,
     0 1px 0 0 #dedede, 1px 0 0 0 #dedede;
@@ -68,8 +68,12 @@ export default {
   text-align: left;
   padding-left: 40px;
   position: relative;
-  margin-bottom: 12px;
+  padding-bottom: 12px;
   padding-right: 10px;
+  cursor: pointer;
+  &:hover {
+    color: rgba(0, 0, 0, 0.6);
+  }
   input {
     position: absolute;
     left: 0;
