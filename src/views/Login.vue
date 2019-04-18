@@ -40,11 +40,7 @@ export default {
   },
   methods: {
     isUserExists(username) {
-      return (
-        this.users.filter(
-          user => user.email.toLowerCase() === username.toLowerCase(),
-        ).length > 0
-      );
+      return this.users.filter(user => user.email.toLowerCase() === username.toLowerCase()).length > 0;
     },
     async login() {
       const { email, username, phone } = this;
@@ -84,7 +80,7 @@ export default {
 .login-form {
   width: 180px;
   position: absolute;
-  top: 165px;
+  top: 200px;
   left: 50%;
   margin-left: -90px;
   color: black;

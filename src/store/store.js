@@ -62,6 +62,7 @@ export default new Vuex.Store({
     },
     RESET_TOKEN(state) {
       state.token = null;
+      localStorage.removeItem('user-token');
     },
     SET_QUESTIONS(state, { questions }) {
       state.quizQuestions = { ...questions };
