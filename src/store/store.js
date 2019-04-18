@@ -42,8 +42,8 @@ export default new Vuex.Store({
     questionNumber: 0,
     multipliers: {
       EASY: 1,
-      MEDIUM: 1,
-      HARD: 2,
+      MEDIUM: 2,
+      HARD: 3,
     },
   },
   getters: {
@@ -82,16 +82,11 @@ export default new Vuex.Store({
       state.availableHelpers[data.key].isAvailable = data.value;
     },
     REMOVE_HALF_VARIANTS(state) {
-      const questionVariants =
-        state.quizQuestions[state.questionType][state.questionNumber].variants;
+      const questionVariants = state.quizQuestions[state.questionType][state.questionNumber].variants;
       let newVariants = [questionVariants.find(el => el.isValid)];
-      const invalidVariants = shuffleArray(
-        questionVariants.filter(el => !el.isValid),
-      );
+      const invalidVariants = shuffleArray(questionVariants.filter(el => !el.isValid));
       newVariants.push(invalidVariants.pop());
-      state.quizQuestions[state.questionType][state.questionNumber].variants = [
-        ...shuffleArray(newVariants),
-      ];
+      state.quizQuestions[state.questionType][state.questionNumber].variants = [...shuffleArray(newVariants)];
     },
     CAN_MISTAKE(state) {
       state.canMistake = true;
@@ -100,9 +95,7 @@ export default new Vuex.Store({
       state.canMistake = false;
     },
     DISABLE_HELPERS(state) {
-      ['fifty', 'mistake', 'call'].forEach(
-        el => (state.availableHelpers[el].isAvailable = false),
-      );
+      ['fifty', 'mistake', 'call'].forEach(el => (state.availableHelpers[el].isAvailable = false));
     },
     COMPLETE_USER_GAME(state, status) {
       state.currentUser.hasCompleted = true;
@@ -163,12 +156,8 @@ export default new Vuex.Store({
       return usersRef.id;
     },
     async getQuestions({ commit, rootState }) {
-      const fQuestionsRef = await rootState.db
-        .collection('frontendQuestions')
-        .get();
-      const bQuestionsRef = await rootState.db
-        .collection('backendQuestions')
-        .get();
+      const fQuestionsRef = await rootState.db.collection('frontendQuestions').get();
+      const bQuestionsRef = await rootState.db.collection('backendQuestions').get();
       const questions = {
         frontend: {},
         backend: {},
@@ -178,23 +167,18 @@ export default new Vuex.Store({
       };
       const prepareQuestions = arr => {
         return ['EASY', 'MEDIUM', 'HARD'].reduce((acc, curr) => {
-          return [
-            ...acc,
-            ...sliceQuestions(shuffleArray(arr[curr]), curr === 'HARD' ? 3 : 6),
-          ];
+          return [...acc, ...sliceQuestions(shuffleArray(arr[curr]), curr === 'HARD' ? 3 : 6)];
         }, []);
       };
 
       fQuestionsRef.forEach(q => {
         const question = q.data();
-        if (!questions.frontend[question.level])
-          questions.frontend[question.level] = [];
+        if (!questions.frontend[question.level]) questions.frontend[question.level] = [];
         questions.frontend[question.level].push({ ...question, id: q.id });
       });
       bQuestionsRef.forEach(q => {
         const question = q.data();
-        if (!questions.backend[question.level])
-          questions.backend[question.level] = [];
+        if (!questions.backend[question.level]) questions.backend[question.level] = [];
         questions.backend[question.level].push({ ...question, id: q.id });
       });
 
@@ -210,9 +194,7 @@ export default new Vuex.Store({
     async selectVariant({ commit, rootState }, answerData) {
       const { answer, lastQuestion, timeCompleted } = answerData;
       // TODO: POST complex data to Firestore
-      const score =
-        rootState.currentUser.score +
-        (answer.isValid ? rootState.multipliers[answer.level] : 0);
+      const score = rootState.currentUser.score + (answer.isValid ? rootState.multipliers[answer.level] : 0);
       await rootState.db
         .collection('users')
         .doc(rootState.token)

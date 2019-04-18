@@ -68,8 +68,7 @@ export default new Router({
     {
       path: '/results',
       name: 'results',
-      component: () =>
-        import(/* webpackChunkName: "about" */ './views/Results.vue'),
+      component: () => import(/* webpackChunkName: "about" */ './views/Results.vue'),
     },
   ],
 });
