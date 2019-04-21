@@ -2,9 +2,7 @@
   <div id="app">
     <router-view />
     <div class="debug" v-if="isDebug">
-      Пользователь {{ currentUser.username }} ({{ currentUser.email }}) ({{
-        currentUser.score
-      }})
+      Пользователь {{ currentUser.username }} ({{ currentUser.email }}) ({{ currentUser.score }})
     </div>
   </div>
 </template>
@@ -80,6 +78,8 @@ body {
 .header {
   position: relative;
 }
+</style>
+<style scoped>
 .username {
   position: absolute;
   left: 0;
