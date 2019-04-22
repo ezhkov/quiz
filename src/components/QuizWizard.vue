@@ -16,7 +16,7 @@
         <GameSuccess v-if="gameFinished" />
       </div>
       <div class="quiz-footer" v-if="!gameFinished">
-        <QuizTimer @doneCountdown="doneCountown" :question="questions[questionNumber]" />
+        <QuizTimer @doneCountdown="doneCountdown" :question="questions[questionNumber]" />
         <div class="quiz-buttons">
           <button
             class="helper-trigger"
@@ -78,7 +78,7 @@ export default {
     changeVariant(value) {
       this.activeStepVariant = { ...value };
     },
-    doneCountown() {
+    doneCountdown() {
       this.$store.commit('DISABLE_HELPERS');
       this.$store.dispatch('finishGame', false);
     },

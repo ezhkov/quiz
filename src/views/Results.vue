@@ -150,6 +150,8 @@ h1 {
   flex-grow: 1;
   overflow-y: auto;
   width: 100%;
+  box-sizing: border-box;
+  padding-right: 30px;
 }
 
 .results-table {
@@ -158,10 +160,13 @@ h1 {
   th {
     text-align: right;
     text-transform: uppercase;
+    position: absolute;
+    right: 30px;
+    top: 80px;
   }
   td {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     text-transform: uppercase;
   }
 
@@ -183,29 +188,29 @@ h1 {
     }
   }
 
-  tr:nth-child(n + 1) {
+  tr:nth-child(5n + 1) {
     .user-icon {
-      background: url('../assets/pers1.svg') 50% 50% no-repeat;
+      background: url('../assets/pers1.svg') 50% 50%/100% no-repeat;
     }
   }
-  tr:nth-child(n + 2) {
+  tr:nth-child(5n + 2) {
     .user-icon {
-      background: url('../assets/pers2.svg') 50% 50% no-repeat;
+      background: url('../assets/pers2.svg') 50% 50%/100% no-repeat;
     }
   }
-  tr:nth-child(n + 3) {
+  tr:nth-child(5n + 3) {
     .user-icon {
-      background: url('../assets/pers3.svg') 50% 50% no-repeat;
+      background: url('../assets/pers3.svg') 50% 50%/100% no-repeat;
     }
   }
-  tr:nth-child(n + 4) {
+  tr:nth-child(5n + 4) {
     .user-icon {
-      background: url('../assets/pers4.svg') 50% 50% no-repeat;
+      background: url('../assets/pers4.svg') 50% 50%/100% no-repeat;
     }
   }
-  tr:nth-child(n + 5) {
+  tr:nth-child(5n + 5) {
     .user-icon {
-      background: url('../assets/pers5.svg') 50% 50% no-repeat;
+      background: url('../assets/pers5.svg') 50% 50%/100% no-repeat;
     }
   }
 
@@ -243,7 +248,6 @@ h1 {
   height: 48px;
   vertical-align: middle;
   margin-right: 16px;
-  background-size: 100%;
 }
 
 .clock-icon {

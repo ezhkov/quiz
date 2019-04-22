@@ -31,6 +31,11 @@ export default {
     useHelper(key, e) {
       e.preventDefault();
       this.$store.dispatch('useHelper', { key });
+      setTimeout(() => {
+        if (this.showHelpers) {
+          this.$emit('triggerHelpers');
+        }
+      }, 300);
     },
   },
 };
