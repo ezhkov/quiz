@@ -1,19 +1,11 @@
 <template>
   <div class="content-wrapper">
     <div class="quiz" v-if="isFetching || !currentUser">
-      <div class="quiz-header">
-        Загрузка...
-        <div class="quiz-header-icons"></div>
-      </div>
       <div class="quiz-loader">
         Loading...
       </div>
     </div>
-    <QuizWizard
-      :questions="quizQuestions[questionType]"
-      :initialNumber="currentUser.lastQuestion"
-      v-else
-    />
+    <QuizWizard :questions="quizQuestions[questionType]" :initialNumber="currentUser.lastQuestion" v-else />
   </div>
 </template>
 
@@ -28,13 +20,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState([
-      'quizQuestions',
-      'currentUser',
-      'token',
-      'isFetching',
-      'questionType',
-    ]),
+    ...mapState(['quizQuestions', 'currentUser', 'token', 'isFetching', 'questionType']),
   },
   components: {
     QuizWizard,
@@ -52,25 +38,8 @@ export default {
 
 .quiz {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
   box-sizing: border-box;
-  background: #bdbdbd;
-  border: 1px solid;
-  border-top-color: #dfdfdf;
-  border-left-color: #dfdfdf;
-  border-right-color: #000;
-  border-bottom-color: #000;
-}
-
-.quiz-header {
-  margin: 2px 2px 0;
-  padding: 1px 2px;
-  background: linear-gradient(to right, #00007b 0%, #087ecb 100%);
-  color: white;
-  box-sizing: border-box;
-  height: 23px;
+  background: url('../assets/question.jpg') 50% 50% / 100% no-repeat;
 }
 
 .quiz-loader {

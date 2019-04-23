@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @contextmenu="onContextMenu">
     <router-view />
     <div class="debug" v-if="isDebug">
       Пользователь {{ currentUser.username }} ({{ currentUser.email }}) ({{ currentUser.score }})
@@ -23,7 +23,22 @@ export default {
     'token',
     'currentUser',
   ]),
+  methods: {
+    onContextMenu(e) {
+      if (process.env.NODE_ENV !== 'development') {
+        e.preventDefault();
+      }
+    },
+    onKeyPress(e) {
+      if (process.env.NODE_ENV !== 'development') {
+        if ((e.metaKey && e.altKey && e.code === 'KeyI') || e.code === 'F12') {
+          e.preventDefault();
+        }
+      }
+    },
+  },
   created: function() {
+    document.addEventListener('keydown', this.onKeyPress);
     if (this.token) {
       this.$store.dispatch('getCurrentUser', this.token).then(() => {
         if (this.currentUser.hasCompleted) {

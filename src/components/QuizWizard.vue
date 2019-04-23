@@ -1,22 +1,36 @@
 <template>
   <div class="quiz">
-    <div class="quiz-inner">
-      <div class="quiz-header">
-        <template v-if="!gameFinished">
-          Вопрос №{{ questionNumber + 1 }}
-        </template>
-        <template v-else>
-          Конец
-        </template>
-        <div class="quiz-header-icons"></div>
+    <div class="quiz-header">
+      <div class="quiz-progress">
+        <span class="user-icon"></span>
+        <ul class="quiz-progress-items">
+          <li
+            class="quiz-progress-item"
+            v-for="(quest, index) in questions.length"
+            :class="{ current: index === questionNumber, done: index < questionNumber }"
+            :key="index"
+          ></li>
+        </ul>
       </div>
-      <hr />
-      <div class="quiz-body" :class="{ 'no-padding': gameFinished }">
-        <QuizStep :question="questions[questionNumber]" @changeVariant="changeVariant" v-if="!gameFinished" />
-        <GameSuccess v-if="gameFinished" />
-      </div>
-      <div class="quiz-footer" v-if="!gameFinished">
+      <div class="quiz-timer">
+        <span class="header-text">Time</span>
         <QuizTimer @doneCountdown="doneCountdown" :question="questions[questionNumber]" />
+      </div>
+      <div class="quiz-level">
+        <span class="header-text">Level</span>
+        <div class="quiz-level-text" :class="questions[questionNumber].level.toLowerCase()">
+          {{ questions[questionNumber].level }}
+        </div>
+      </div>
+    </div>
+    <div class="quiz-body" :class="{ 'no-padding': gameFinished }">
+      <QuizStep :question="questions[questionNumber]" @changeVariant="changeVariant" v-if="!gameFinished" />
+      <GameSuccess v-if="gameFinished" />
+    </div>
+
+    <div class="quiz-inner">
+      <hr />
+      <div class="quiz-footer" v-if="!gameFinished">
         <div class="quiz-buttons">
           <button
             class="helper-trigger"
@@ -122,13 +136,13 @@ export default {
 <style>
 .vue-simple-markdown__inline-code {
   padding: 3px;
-  background: #d6d6d6;
+  background: #2b2b2b;
   border: 1px solid #949494;
   border-radius: 2px;
 }
 .hljs {
   padding: 10px;
-  background: #d6d6d6;
+  background: #2b2b2b;
   border: 1px solid #949494;
   border-radius: 2px;
   display: inline-block;
@@ -219,43 +233,97 @@ ul {
   list-style-type: none;
   padding: 0;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
 a {
   color: #42b983;
 }
+
 .quiz {
   height: 100%;
   box-sizing: border-box;
-  background: #bdbdbd;
-  border: 1px solid;
-  border-top-color: #dfdfdf;
-  border-left-color: #dfdfdf;
-  border-right-color: #000;
-  border-bottom-color: #000;
+  background: url('../assets/question.jpg') 50% 50% / 100% no-repeat;
+  font-family: press_start_2pregular, Tahoma, sans-serif;
 }
-.quiz-inner {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  height: 100%;
-  border: 1px solid;
-  border-top-color: #fff;
-  border-left-color: #fff;
-  border-right-color: #808080;
-  border-bottom-color: #808080;
-}
+
 .quiz-header {
-  margin: 2px 2px 0;
-  padding: 1px 2px;
-  background: linear-gradient(to right, #00007b 0%, #087ecb 100%);
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 40px;
+  padding-right: 40px;
+  margin-bottom: 40px;
+}
+
+.header-text {
+  font-size: 24px;
   color: white;
+  text-transform: uppercase;
+  margin-bottom: 11px;
+  display: block;
+  line-height: 24px;
+}
+
+.quiz-progress {
+  display: flex;
+  align-items: center;
+}
+
+.quiz-progress-items {
+  display: flex;
+  align-items: stretch;
+}
+
+.quiz-progress-item {
+  width: 12px;
+  height: 30px;
+  background: #bebebe;
+  border: 2px solid #000000;
+  box-shadow: inset 3px 0 0 0 #ffffff, inset 0 3px 0 0 #ffffff;
+  margin-right: 2px;
   box-sizing: border-box;
-  height: 23px;
+  &.current {
+    background: #fbff00;
+  }
+  &.done {
+    background: #17ed4d;
+  }
+}
+
+.quiz-timer {
+  position: absolute;
+  left: 50%;
+  width: 100px;
+  margin-left: -50px;
+  text-align: center;
+  top: 30px;
+}
+
+.quiz-level {
+}
+
+.quiz-level-text {
+  text-transform: uppercase;
+  font-size: 16px;
+  line-height: 16px;
+  text-shadow: 1px 2px 0 #000000;
+  &.easy {
+    color: #17ed4d;
+  }
+  &.medium {
+    color: #ef7436;
+  }
+  &.hard {
+    color: red;
+  }
+}
+
+.user-icon {
+  display: block;
+  width: 47px;
+  height: 58px;
+  vertical-align: middle;
+  margin-right: 3px;
+  background: url('../assets/pers1.svg') 50% 50%/100% no-repeat;
 }
 
 .quiz-header-icons {
@@ -278,23 +346,8 @@ hr {
 }
 
 .quiz-body {
-  margin-left: 2px;
-  margin-right: 2px;
-  padding: 20px;
-  &.no-padding {
-    padding: 0;
-    flex: 1;
-  }
-}
-
-.quiz-footer {
-  margin-top: auto;
-  padding-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 90px;
+  padding-right: 90px;
 }
 
 button {

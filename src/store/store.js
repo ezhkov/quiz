@@ -38,7 +38,7 @@ export default new Vuex.Store({
     },
     token: localStorage.getItem('user-token') || null,
     isFetching: false,
-    questionType: 'frontend',
+    questionType: '',
     questionNumber: 0,
     multipliers: {
       EASY: 1,
@@ -105,6 +105,9 @@ export default new Vuex.Store({
       } else {
         state.gameFailed = true;
       }
+    },
+    SET_QUESTION_TYPE(state, type) {
+      state.questionType = type;
     },
   },
   actions: {

@@ -6,7 +6,7 @@
       done: timerCount === 0,
     }"
   >
-    <span class="countdown-icon"></span>{{ timer }}
+    {{ timer }}
   </div>
 </template>
 
@@ -24,9 +24,7 @@ export default {
     timer() {
       const minutes = Math.floor(this.timerCount / 60);
       const seconds = this.timerCount - minutes * 60;
-      return `0${minutes}:${
-        seconds.toString().length === 1 ? '0' : ''
-      }${seconds}`;
+      return `0${minutes}:${seconds.toString().length === 1 ? '0' : ''}${seconds}`;
     },
   },
   methods: {
@@ -55,30 +53,13 @@ export default {
 
 <style scoped lang="scss">
 .countdown {
-  border-bottom: 1px solid #dedede;
-  border-right: 1px solid #dedede;
-  border-top: 1px solid black;
-  border-left: 1px solid black;
-  box-shadow: inset 1px 0 0 0 #7b7b7b, inset 0 1px 0 0 #7b7b7b;
-  background: #bdbdbd;
-  display: flex;
-  align-items: center;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 24px;
-  padding-right: 24px;
+  color: white;
   &.danger {
     animation: blink 1s infinite;
   }
   &.done {
     background-color: #ff0000;
   }
-}
-.countdown-icon {
-  width: 13px;
-  height: 20px;
-  background: url('../assets/timer.gif') 50% 50% no-repeat;
-  margin-right: 9px;
 }
 
 @keyframes blink {
