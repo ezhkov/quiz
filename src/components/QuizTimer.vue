@@ -16,7 +16,7 @@ export default {
   props: ['question'],
   data() {
     return {
-      timerCount: 60,
+      timerCount: 600000,
       timerInterval: null,
     };
   },
@@ -30,7 +30,7 @@ export default {
   methods: {
     startCount() {
       if (this.timerInterval) clearInterval(this.timerInterval);
-      this.timerCount = 60;
+      this.timerCount = 600000;
       this.timerInterval = setInterval(() => {
         this.timerCount -= 1;
         if (this.timerCount === 0) {

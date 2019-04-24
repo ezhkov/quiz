@@ -1,8 +1,10 @@
 <template>
   <div class="game-success">
-    <h2>Поздравляем!</h2>
-    <h3>Вы ответили на все вопросы</h3>
-    <p><router-link to="/results">Перейти к результатам</router-link></p>
+    <p>Поздравляем!</p>
+    <p>Вы ответили на все вопросы</p>
+    <div class="game-success-action">
+      <router-link to="/results" class="quiz-popup-link">Посмотреть результаты</router-link>
+    </div>
   </div>
 </template>
 
@@ -20,16 +22,37 @@ export default {
 
 <style scoped lang="scss">
 .game-success {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  box-sizing: border-box;
-  padding-left: 50px;
-  padding-right: 50px;
-  background: url('../../assets/success.jpg') 50% 50% no-repeat;
-  background-size: cover;
-  flex-direction: column;
+  font-size: 24px;
+  line-height: 24px;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: 0;
+  text-align: center;
+  margin-top: 80px;
+}
+p + p {
+  margin-top: 24px;
+}
+.game-success-action {
+  margin-top: 80px;
+}
+
+.quiz-popup-link {
+  display: inline-block;
+  background: #fbff00;
+  box-shadow: inset 2px 0 0 0 #ffffff, inset 0 2px 0 0 #ffffff;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  text-transform: uppercase;
+  font-size: 10px;
+  color: black;
+  text-decoration: none;
+
+  &:disabled {
+    opacity: 0.6;
+  }
 }
 </style>

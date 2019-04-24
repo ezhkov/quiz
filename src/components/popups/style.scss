@@ -1,88 +1,131 @@
 .quiz-popup {
   position: absolute;
-  width: 270px;
+  width: 600px;
   left: 50%;
-  margin-left: -130px;
-  top: 100px;
+  margin-left: -300px;
+  top: 130px;
   display: flex;
   flex-direction: column;
-  background: #bdbdbd;
-  border: 1px solid;
-  border-top-color: #dfdfdf;
-  border-left-color: #dfdfdf;
-  border-right-color: #000;
-  border-bottom-color: #000;
-}
-
-.quiz-header {
-  margin: 2px 2px 0;
-  padding: 1px 2px;
-  background: linear-gradient(to right, #00007b 0%, #087ecb 100%);
-  color: white;
+  background: #162946;
+  border: 1px solid #000000;
+  box-shadow: inset 0 3px 0 0 #FFFFFF, inset 3px 0 0 0 #FFFFFF;
+  padding: 56px 60px 80px;
   box-sizing: border-box;
-  height: 23px;
 }
 
-
-.quiz-popup-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  border: 1px solid;
-  border-top-color: #fff;
-  border-left-color: #fff;
-  border-right-color: #808080;
-  border-bottom-color: #808080;
-}
-
-.quiz-close-icon {
-  margin: 1px 0;
-  background: url('../../assets/close.gif') 50% 50% no-repeat;
-  width: 21px;
-  height: 19px;
-  float: right;
-  cursor: pointer;
-}
-button {
-  border-right: 1px solid #000000;
-  border-bottom: 1px solid #000000;
-  border-left: 1px solid #dedede;
-  border-top: 1px solid #dedede;
-  background: #bdbdbd;
-  box-shadow: inset -1px 0 0 0 #7f7f7f, inset 0 -1px 0 0 #7f7f7f;
-  font-size: 16px;
-  text-align: center;
-  min-width: 116px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  padding-left: 6px;
-  padding-right: 6px;
-}
-
-.quiz-helpers-body {
-  display: flex;
-  flex-direction: column;
-  margin: 22px 12px;
-  padding: 50px 45px;
-  border: 1px solid grey;
-  box-shadow: inset 1px 0 0 0 #dedede, inset 0 1px 0 0 #dedede,
-  0 1px 0 0 #dedede, 1px 0 0 0 #dedede;
+.quiz-popup-header {
   position: relative;
-  button {
-    white-space: nowrap;
-    font-size: 14px;
-  }
-  button + button {
-    margin-top: 30px;
+  z-index: 0;
+  margin-bottom: 70px;
+}
+
+.quiz-header-text {
+  background: -webkit-linear-gradient(#eb553b, #fee027);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 26px;
+  line-height: 26px;
+
+  &:after {
+    background: none;
+    content: attr(data-text);
+    left: 0;
+    position: absolute;
+    text-shadow: 2px 4px 0 rgba(0, 0, 0, 0.9);
+    top: 0;
+    z-index: -1;
   }
 }
-.quiz-helpers-label {
+
+.quiz-popup-close {
   position: absolute;
-  left: 30px;
-  top: -10px;
-  background: #bdbdbd;
+  width: 25px;
+  height: 25px;
+  padding: 20px;
+  right: 0;
+  top: 0;
+  background: url('../../assets/icon_close.svg') 50% 50% no-repeat;
+}
+
+.quiz-popup-body {
+  font-family: press_start_2pregular, Tahoma, sans-serif;
+}
+
+.quiz-helpers-list {
+  display: flex;
+  justify-content: center;
+}
+
+.quiz-helpers-item {
+  list-style-type: none;
+  margin-left: 28px;
+  margin-right: 28px;
+}
+
+.quiz-helpers-button {
+  cursor: pointer;
+  max-width: 150px;
+
+  &:hover {
+    .quiz-helpers-text {
+      color: #F9BF2B;
+    }
+  }
+
+  &:disabled {
+    opacity: .4;
+  }
+}
+
+.quiz-helpers-icon {
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+
+  &.mistake {
+    background: url('../../assets/icon_mistake.svg') 50% 50% / 100% no-repeat;
+  }
+
+  &.fifty {
+    background: url('../../assets/icon_fifty.svg') 50% 50% / 100% no-repeat;
+  }
+
+  &.call {
+    background: url('../../assets/icon_call.svg') 50% 50% / 100% no-repeat;
+  }
+}
+
+.quiz-helpers-text {
   font-size: 16px;
-  padding-left: 3px;
-  padding-right: 3px;
+  color: #FFFFFF;
+  letter-spacing: 0;
+  text-align: center;
+  line-height: 24px;
+  font-family: press_start_2pregular, Tahoma, sans-serif;
+  text-transform: uppercase;
+}
+
+.quiz-popup-link {
+  display: inline-block;
+  background: #fbff00;
+  box-shadow: inset 2px 0 0 0 #ffffff, inset 0 2px 0 0 #ffffff;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  text-transform: uppercase;
+  font-size: 10px;
+  color: black;
+  text-decoration: none;
+
+  &:disabled {
+    opacity: 0.6;
+  }
 }

@@ -1,16 +1,16 @@
 <template>
   <div class="quiz-popup" v-if="gameFailed">
-    <div class="quiz-popup-inner">
-      <div class="quiz-header">
-        <div class="quiz-close-icon" @click="gotoResults"></div>
+    <div class="quiz-popup-header">
+      <div class="quiz-header-icon"></div>
+      <span class="quiz-header-text">Игра окончена</span>
+    </div>
+    <div class="quiz-popup-body">
+      <div class="quiz-popup-text">
+        Спасибо,<br />
+        что были с нами
       </div>
-      <hr />
-      <div class="quiz-helpers-body">
-        <div class="quiz-popup-text">
-          <h2>Игра окончена!</h2>
-          <p>Спасибо, что были с нами)</p>
-          <p><router-link to="/results">Посмотреть результаты</router-link></p>
-        </div>
+      <div class="quiz-popup-action">
+        <router-link to="/results" class="quiz-popup-link">Посмотреть результаты</router-link>
       </div>
     </div>
   </div>
@@ -30,4 +30,31 @@ export default {
 
 <style scoped lang="scss">
 @import 'style';
+
+.quiz-popup {
+  padding-bottom: 40px;
+  padding-top: 32px;
+}
+.quiz-popup-header {
+  margin-bottom: 24px;
+}
+
+.quiz-popup-text {
+  font-size: 24px;
+  color: #ffffff;
+  letter-spacing: 0;
+  text-align: center;
+  line-height: 40px;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+
+.quiz-header-icon {
+  background: url('../../assets/icon_heart.svg') 50% 50% no-repeat;
+  width: 40px;
+  height: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 25px;
+}
 </style>

@@ -1,22 +1,19 @@
 <template>
   <div class="quiz-popup" v-if="showHelpers">
-    <div class="quiz-popup-inner">
-      <div class="quiz-header">
-        <div class="quiz-close-icon" @click="triggerHelpers"></div>
-      </div>
-      <hr />
-      <div class="quiz-helpers-body">
-        <span class="quiz-helpers-label">Помощь</span>
-        <button
-          @click="useHelper(helper.key, $event)"
-          :key="helper.key"
-          v-for="helper in availableHelpers"
-          :disabled="!helper.isAvailable"
-        >
-          {{ helper.name }}
-        </button>
-      </div>
+    <div class="quiz-popup-header">
+      <span class="quiz-header-text">Help me</span>
     </div>
+    <div class="quiz-popup-body">
+      <ul class="quiz-helpers-list">
+        <li class="quiz-helpers-item" :key="helper.key" v-for="helper in availableHelpers">
+          <button @click="useHelper(helper.key, $event)" :disabled="!helper.isAvailable" class="quiz-helpers-button">
+            <span class="quiz-helpers-icon" :class="helper.key"></span>
+            <span class="quiz-helpers-text" v-html="helper.name"></span>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div class="quiz-popup-close" @click="triggerHelpers"></div>
   </div>
 </template>
 

@@ -19,15 +19,15 @@ export default new Vuex.Store({
     canMistake: false,
     gameFailed: false,
     gameFinished: false,
-    availableHelpers: {
+    helpers: {
       fifty: {
         key: 'fifty',
-        name: '50/50',
+        name: 'Вопросы 50/50',
         isAvailable: true,
       },
       mistake: {
         key: 'mistake',
-        name: 'Право на ошибку',
+        name: 'Право на&nbsp;ошибку',
         isAvailable: true,
       },
       call: {
@@ -48,6 +48,9 @@ export default new Vuex.Store({
   },
   getters: {
     isAuthenticated: state => !!state.token,
+    availableHelpers(state) {
+      return Object.values(state.helpers).filter(el => el.isAvailable);
+    },
   },
   mutations: {
     SET_USERS(state, { users }) {
@@ -55,6 +58,7 @@ export default new Vuex.Store({
     },
     SET_CURRENT_USER(state, { user, token }) {
       state.currentUser = { ...user };
+      state.questionType = user.questionType;
       state.token = token;
     },
     SET_TOKEN(state, token) {
@@ -80,7 +84,7 @@ export default new Vuex.Store({
       state.questionNumber = number;
     },
     UPDATE_HELPERS(state, data) {
-      state.availableHelpers[data.key].isAvailable = data.value;
+      state.helpers[data.key].isAvailable = data.value;
     },
     REMOVE_HALF_VARIANTS(state) {
       const questionVariants = state.quizQuestions[state.questionType][state.questionNumber].variants;
@@ -96,7 +100,7 @@ export default new Vuex.Store({
       state.canMistake = false;
     },
     DISABLE_HELPERS(state) {
-      ['fifty', 'mistake', 'call'].forEach(el => (state.availableHelpers[el].isAvailable = false));
+      ['fifty', 'mistake', 'call'].forEach(el => (state.helpers[el].isAvailable = false));
     },
     COMPLETE_USER_GAME(state, status) {
       state.currentUser.hasCompleted = true;
@@ -152,6 +156,7 @@ export default new Vuex.Store({
         ...user,
         hasCompleted: false,
         score: 0,
+        questionType: rootState.questionType,
         timeStarted: new Date(),
       };
       const usersRef = await rootState.db.collection('users').add(userToAdd);

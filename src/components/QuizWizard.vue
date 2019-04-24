@@ -26,39 +26,32 @@
     <div class="quiz-body" :class="{ 'no-padding': gameFinished }">
       <QuizStep :question="questions[questionNumber]" @changeVariant="changeVariant" v-if="!gameFinished" />
       <GameSuccess v-if="gameFinished" />
-    </div>
-
-    <div class="quiz-inner">
-      <hr />
-      <div class="quiz-footer" v-if="!gameFinished">
-        <div class="quiz-buttons">
-          <button
-            class="helper-trigger"
-            :class="{ active: showHelpers }"
-            :disabled="!hasAvailableHelpers"
-            @click="triggerHelpers"
-          >
-            Помощь
-          </button>
-          <button @click="submitStep" :disabled="!activeStepVariant">
-            <template v-if="questionNumber < 14">
-              Вопрос {{ questionNumber + 2 }}
-            </template>
-            <template v-else>
-              Завершить
-            </template>
-          </button>
-        </div>
-      </div>
-      <div class="quiz-helpers-overlay" v-if="showHelpers || gameFailed" @click="triggerHelpers"></div>
       <Helpers :availableHelpers="availableHelpers" :showHelpers="showHelpers" @triggerHelpers="triggerHelpers" />
       <GameFailed :game-failed="gameFailed" />
+    </div>
+    <div class="quiz-footer" v-if="!gameFinished">
+      <button
+        class="quiz-footer-button"
+        :class="{ active: showHelpers }"
+        :disabled="!hasAvailableHelpers"
+        @click="triggerHelpers"
+      >
+        Help me
+      </button>
+      <button @click="submitStep" :disabled="!activeStepVariant" class="quiz-footer-button">
+        <template v-if="questionNumber < 14">
+          Next question
+        </template>
+        <template v-else>
+          Завершить
+        </template>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import QuizStep from './QuizStep';
 import QuizTimer from './QuizTimer';
 import Helpers from './popups/Helpers';
@@ -67,7 +60,7 @@ import GameSuccess from './popups/GameSuccess';
 
 export default {
   name: 'QuizWizard',
-  props: ['questions', 'questionType'],
+  props: ['questions'],
   data() {
     return {
       activeStepVariant: null,
@@ -75,17 +68,10 @@ export default {
     };
   },
   computed: {
-    ...mapState([
-      'currentUser',
-      'token',
-      'questionNumber',
-      'availableHelpers',
-      'canMistake',
-      'gameFinished',
-      'gameFailed',
-    ]),
+    ...mapState(['currentUser', 'token', 'questionNumber', 'canMistake', 'gameFinished', 'gameFailed', 'questionType']),
+    ...mapGetters(['availableHelpers']),
     hasAvailableHelpers() {
-      return Object.values(this.availableHelpers).find(el => el.isAvailable);
+      return this.availableHelpers.length;
     },
   },
   methods: {
@@ -132,107 +118,20 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-.vue-simple-markdown__inline-code {
-  padding: 3px;
-  background: #2b2b2b;
-  border: 1px solid #949494;
-  border-radius: 2px;
-}
-.hljs {
-  padding: 10px;
-  background: #2b2b2b;
-  border: 1px solid #949494;
-  border-radius: 2px;
-  display: inline-block;
-}
-
-/*
-
-Darcula color scheme from the JetBrains family of IDEs
-
-*/
-
-.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  background: #2b2b2b;
-}
-
-.hljs {
-  color: #bababa;
-}
-
-.hljs-strong,
-.hljs-emphasis {
-  color: #a8a8a2;
-}
-
-.hljs-bullet,
-.hljs-quote,
-.hljs-link,
-.hljs-number,
-.hljs-regexp,
-.hljs-literal {
-  color: #6896ba;
-}
-
-.hljs-code,
-.hljs-selector-class {
-  color: #a6e22e;
-}
-
-.hljs-emphasis {
-  font-style: italic;
-}
-
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-section,
-.hljs-attribute,
-.hljs-name,
-.hljs-variable {
-  color: #cb7832;
-}
-
-.hljs-params {
-  color: #b9b9b9;
-}
-
-.hljs-string {
-  color: #6a8759;
-}
-
-.hljs-subst,
-.hljs-type,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-symbol,
-.hljs-selector-id,
-.hljs-selector-attr,
-.hljs-selector-pseudo,
-.hljs-template-tag,
-.hljs-template-variable,
-.hljs-addition {
-  color: #e0c46c;
-}
-
-.hljs-comment,
-.hljs-deletion,
-.hljs-meta {
-  color: #7f7f7f;
-}
+<style lang="scss">
+@import 'syntax';
 </style>
+
 <style scoped lang="scss">
 h3 {
   margin: 40px 0 0;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 a {
   color: #42b983;
 }
@@ -240,6 +139,9 @@ a {
 .quiz {
   height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   background: url('../assets/question.jpg') 50% 50% / 100% no-repeat;
   font-family: press_start_2pregular, Tahoma, sans-serif;
 }
@@ -281,9 +183,11 @@ a {
   box-shadow: inset 3px 0 0 0 #ffffff, inset 0 3px 0 0 #ffffff;
   margin-right: 2px;
   box-sizing: border-box;
+
   &.current {
     background: #fbff00;
   }
+
   &.done {
     background: #17ed4d;
   }
@@ -306,12 +210,15 @@ a {
   font-size: 16px;
   line-height: 16px;
   text-shadow: 1px 2px 0 #000000;
+
   &.easy {
     color: #17ed4d;
   }
+
   &.medium {
     color: #ef7436;
   }
+
   &.hard {
     color: red;
   }
@@ -348,32 +255,19 @@ hr {
 .quiz-body {
   padding-left: 90px;
   padding-right: 90px;
+  &.no-padding {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
-button {
-  border-right: 1px solid #000000;
-  border-bottom: 1px solid #000000;
-  border-left: 1px solid #dedede;
-  border-top: 1px solid #dedede;
-  background: #bdbdbd;
-  box-shadow: inset -1px 0 0 0 #7f7f7f, inset 0 -1px 0 0 #7f7f7f;
-  font-size: 16px;
-  text-align: center;
-  min-width: 116px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  padding-left: 6px;
-  padding-right: 6px;
-}
-.helper-trigger {
-  margin-right: 10px;
-  &.active {
-    border-bottom: 1px solid #dedede;
-    border-right: 1px solid #dedede;
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    box-shadow: inset 1px 0 0 0 #7b7b7b, inset 0 1px 0 0 #7b7b7b;
-  }
+.quiz-footer {
+  margin-top: auto;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .quiz-helpers-overlay {
@@ -384,5 +278,19 @@ button {
   bottom: 0;
   background: #000;
   opacity: 0.6;
+}
+
+.quiz-footer-button {
+  font-family: press_start_2pregular, Tahoma, sans-serif;
+  font-size: 20px;
+  color: #ffffff;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  &:active {
+    color: #ef7436;
+  }
+  &:disabled {
+    opacity: 0.6;
+  }
 }
 </style>
