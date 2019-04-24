@@ -60,7 +60,9 @@ export default {
   },
   created() {
     if (!this.users.length) this.$store.dispatch('getUsers');
-    this.$store.commit('RESET_TOKEN');
+    setInterval(() => {
+      this.$store.dispatch('getUsers');
+    }, 30000);
   },
 };
 </script>

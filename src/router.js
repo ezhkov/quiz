@@ -70,5 +70,10 @@ export default new Router({
       name: 'results',
       component: () => import(/* webpackChunkName: "about" */ './views/Results.vue'),
     },
+    {
+      path: '/score',
+      name: 'score',
+      component: () => import(/* webpackChunkName: "about" */ './views/Score.vue'),
+    },
   ],
 });
