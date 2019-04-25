@@ -22,7 +22,12 @@
         <input required v-model="phone" type="tel" placeholder="Телефон" ref="phone" />
       </div>
       <div class="form__action">
-        <button type="submit" :disabled="isLoggingIn || !questionType">Дальше</button>
+        <button
+          type="submit"
+          :disabled="isLoggingIn || !questionType || !username.length || !isPhoneComplete || !email.length"
+        >
+          Дальше
+        </button>
       </div>
     </form>
   </div>
@@ -39,7 +44,9 @@ export default {
       username: '',
       email: '',
       phone: '',
+      isPhoneComplete: false,
       isLoggingIn: false,
+      im: null,
     };
   },
   computed: {
@@ -51,6 +58,9 @@ export default {
     }),
   },
   methods: {
+    checkPhone() {
+      console.log(this.im.isValid());
+    },
     isUserExists(username) {
       return this.users.filter(user => user.email.toLowerCase() === username.toLowerCase()).length > 0;
     },
@@ -73,8 +83,16 @@ export default {
     },
   },
   mounted() {
-    const im = new Inputmask('+7 (999)-999-99-99', { clearIncomplete: true });
-    im.mask(this.$refs.phone);
+    this.im = new Inputmask('+7 (999)-999-99-99', {
+      clearIncomplete: true,
+      oncomplete: () => {
+        this.isPhoneComplete = true;
+      },
+      onincomplete: () => {
+        this.isPhoneComplete = false;
+      },
+    });
+    this.im.mask(this.$refs.phone);
   },
 };
 </script>

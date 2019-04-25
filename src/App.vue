@@ -30,7 +30,6 @@ export default {
       }
     },
     onKeyPress(e) {
-      console.log(e);
       if (process.env.NODE_ENV !== 'development') {
         if (
           (e.metaKey && e.altKey && e.code === 'KeyI') ||

@@ -1,6 +1,10 @@
 <template>
   <div class="content-wrapper">
     <div class="results">
+      <a href="/login" class="to-login">
+        <span class="home-icon"></span>
+        Start
+      </a>
       <div class="results-inner">
         <h1 data-text="Results">Results</h1>
         <div class="results-scroller" ref="scroller">
@@ -32,6 +36,7 @@
           </table>
         </div>
       </div>
+      <div class="results-vac">Тут что-то о работе</div>
     </div>
   </div>
 </template>
@@ -278,5 +283,46 @@ h1 {
 .username {
   display: flex;
   align-items: center;
+}
+.results-vac {
+  position: absolute;
+  left: 90px;
+  right: 90px;
+  bottom: 16px;
+  height: 40px;
+  text-align: center;
+  color: white;
+  font-size: 10px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.to-login {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  position: absolute;
+  top: 100px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  text-decoration: none;
+  font-size: 12px;
+  text-transform: uppercase;
+  z-index: 1;
+  transition: transform 0.2s;
+  &:hover {
+    color: #f8b72c;
+    transform: scale(1.1);
+  }
+}
+.home-icon {
+  width: 35px;
+  height: 30px;
+  display: block;
+  background: url('../assets/icon_home.svg') 50% 50% no-repeat;
+  margin-bottom: 10px;
 }
 </style>
