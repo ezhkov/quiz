@@ -30,8 +30,17 @@ export default {
       }
     },
     onKeyPress(e) {
+      console.log(e);
       if (process.env.NODE_ENV !== 'development') {
-        if ((e.metaKey && e.altKey && e.code === 'KeyI') || e.code === 'F12') {
+        if (
+          (e.metaKey && e.altKey && e.code === 'KeyI') ||
+          (e.ctrlKey && e.altKey && e.code === 'KeyI') ||
+          (e.metaKey && e.altKey && e.code === 'KeyJ') ||
+          (e.ctrlKey && e.altKey && e.code === 'KeyJ') ||
+          (e.metaKey && e.altKey && e.code === 'KeyC') ||
+          (e.ctrlKey && e.altKey && e.code === 'KeyC') ||
+          e.code === 'F12'
+        ) {
           e.preventDefault();
         }
       }
