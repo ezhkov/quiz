@@ -36,7 +36,6 @@
           </table>
         </div>
       </div>
-      <div class="results-vac">Тут что-то о работе</div>
     </div>
   </div>
 </template>

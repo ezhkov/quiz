@@ -286,7 +286,12 @@ hr {
   color: #ffffff;
   letter-spacing: 0;
   text-transform: uppercase;
+  background: transparent;
+  border: none;
   &:active {
+    color: #ef7436;
+  }
+  &:hover {
     color: #ef7436;
   }
   &:disabled {

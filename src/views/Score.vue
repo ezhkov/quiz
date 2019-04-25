@@ -31,6 +31,7 @@
           </table>
         </div>
       </div>
+      <div class="results-vac">Тут что-то о работе</div>
     </div>
   </div>
 </template>
@@ -268,5 +269,19 @@ h1 {
 .username {
   display: flex;
   align-items: center;
+}
+.results-vac {
+  position: absolute;
+  left: 90px;
+  right: 90px;
+  bottom: 16px;
+  height: 40px;
+  text-align: center;
+  color: white;
+  font-size: 10px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
