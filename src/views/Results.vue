@@ -67,6 +67,7 @@ export default {
   watch: {
     preparedUsers() {
       this.$nextTick(() => {
+        if (!this.$refs.current) return true;
         const currentRow = this.$refs.current[0];
         const currentRowOffset = currentRow.offsetTop;
         this.$refs.scroller.scrollTo(0, currentRowOffset - 100);
