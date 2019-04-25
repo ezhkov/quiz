@@ -2,12 +2,11 @@
   <div class="quiz-popup" v-if="gameFailed">
     <div class="quiz-popup-header">
       <div class="quiz-header-icon"></div>
-      <span class="quiz-header-text">Игра окончена</span>
+      <span class="quiz-header-text">Game over</span>
     </div>
     <div class="quiz-popup-body">
       <div class="quiz-popup-text">
-        Спасибо,<br />
-        что были с нами
+        <p>Набрано баллов: {{ score }}</p>
       </div>
       <div class="quiz-popup-action">
         <router-link to="/results" class="quiz-popup-link">Посмотреть результаты</router-link>
@@ -19,7 +18,7 @@
 <script>
 export default {
   name: 'GameFailed',
-  props: ['gameFailed'],
+  props: ['gameFailed', 'score'],
   methods: {
     gotoResults() {
       this.$router.push('/results');

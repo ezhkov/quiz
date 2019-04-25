@@ -14,7 +14,7 @@
       </div>
       <div class="quiz-timer">
         <span class="header-text">Time</span>
-        <QuizTimer @doneCountdown="doneCountdown" :question="questions[questionNumber]" />
+        <QuizTimer @doneCountdown="doneCountdown" :question="questions[questionNumber]" :gameFinished="gameFinished" />
       </div>
       <div class="quiz-level">
         <span class="header-text">Level</span>
@@ -25,9 +25,9 @@
     </div>
     <div class="quiz-body" :class="{ 'no-padding': gameFinished }">
       <QuizStep :question="questions[questionNumber]" @changeVariant="changeVariant" v-if="!gameFinished" />
-      <GameSuccess v-if="gameFinished" />
+      <GameSuccess :score="currentUser.score" v-if="gameFinished" />
       <Helpers :availableHelpers="availableHelpers" :showHelpers="showHelpers" @triggerHelpers="triggerHelpers" />
-      <GameFailed :game-failed="gameFailed" />
+      <GameFailed :game-failed="gameFailed" :score="currentUser.score" />
     </div>
     <div class="quiz-footer" v-if="!gameFinished">
       <button

@@ -19,7 +19,7 @@
         <input required v-model="email" type="email" placeholder="Email" />
       </div>
       <div class="form__row">
-        <input required v-model="phone" type="tel" placeholder="Телефон" />
+        <input required v-model="phone" type="tel" placeholder="Телефон" ref="phone" />
       </div>
       <div class="form__action">
         <button type="submit" :disabled="isLoggingIn || !questionType">Дальше</button>
@@ -30,6 +30,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import Inputmask from 'inputmask';
 
 export default {
   name: 'login',
@@ -70,6 +71,10 @@ export default {
     changeType(type) {
       this.$store.commit('SET_QUESTION_TYPE', type);
     },
+  },
+  mounted() {
+    const im = new Inputmask('+7 (999)-999-99-99', { clearIncomplete: true });
+    im.mask(this.$refs.phone);
   },
 };
 </script>

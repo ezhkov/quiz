@@ -43,6 +43,11 @@ export default {
 }
 
 .quiz-loader {
+  height: 100%;
+  font-family: press_start_2pregular, Tahoma, sans-serif;
+  font-size: 20px;
+  color: #fff;
+
   flex-grow: 1;
   display: flex;
   align-items: center;

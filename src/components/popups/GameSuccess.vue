@@ -2,6 +2,9 @@
   <div class="game-success">
     <p>Поздравляем!</p>
     <p>Вы ответили на все вопросы</p>
+    <p>
+      Количество баллов: <span class="score">{{ score }}</span>
+    </p>
     <div class="game-success-action">
       <router-link to="/results" class="quiz-popup-link">Посмотреть результаты</router-link>
     </div>
@@ -11,7 +14,7 @@
 <script>
 export default {
   name: 'GameSuccess',
-  props: ['gameFinished'],
+  props: ['gameFinished', 'score'],
   methods: {
     gotoResults() {
       this.$router.push('/results');
@@ -54,5 +57,9 @@ p + p {
   &:disabled {
     opacity: 0.6;
   }
+}
+
+.score {
+  color: #fbff00;
 }
 </style>

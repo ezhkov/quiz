@@ -3,7 +3,7 @@
     <div class="results">
       <div class="results-inner">
         <h1 data-text="Results">Results</h1>
-        <div class="results-scroller">
+        <div class="results-scroller" ref="scroller">
           <table class="results-table">
             <thead>
               <tr>
@@ -15,6 +15,7 @@
                 v-for="(user, index) in preparedUsers"
                 :key="user.phone"
                 :class="{ current: user.phone === currentUser.phone }"
+                :ref="user.phone === currentUser.phone ? 'current' : null"
               >
                 <td class="cell-num">
                   <span class="number" :data-text="index + 1">{{ index + 1 }}</span>
@@ -61,6 +62,16 @@ export default {
   created() {
     if (!this.users.length) this.$store.dispatch('getUsers');
     this.$store.commit('RESET_TOKEN');
+  },
+  mounted() {},
+  watch: {
+    preparedUsers() {
+      this.$nextTick(() => {
+        const currentRow = this.$refs.current[0];
+        const currentRowOffset = currentRow.offsetTop;
+        this.$refs.scroller.scrollTo(0, currentRowOffset - 100);
+      });
+    },
   },
 };
 </script>

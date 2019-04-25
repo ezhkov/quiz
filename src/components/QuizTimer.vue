@@ -13,10 +13,10 @@
 <script>
 export default {
   name: 'QuizTimer',
-  props: ['question'],
+  props: ['question', 'gameFinished'],
   data() {
     return {
-      timerCount: 600000,
+      timerCount: 60,
       timerInterval: null,
     };
   },
@@ -30,7 +30,7 @@ export default {
   methods: {
     startCount() {
       if (this.timerInterval) clearInterval(this.timerInterval);
-      this.timerCount = 600000;
+      this.timerCount = 60;
       this.timerInterval = setInterval(() => {
         this.timerCount -= 1;
         if (this.timerCount === 0) {
@@ -43,6 +43,9 @@ export default {
   watch: {
     question() {
       this.startCount();
+    },
+    gameFinished() {
+      clearInterval(this.timerInterval);
     },
   },
   mounted() {
