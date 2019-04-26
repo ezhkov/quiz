@@ -31,7 +31,7 @@
           </table>
         </div>
       </div>
-      <div class="results-vac">Тут что-то о работе</div>
+      <div class="results-vac">Ростелеком ИТ</div>
     </div>
   </div>
 </template>
