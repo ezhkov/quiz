@@ -38,13 +38,17 @@
 
 <script>
 import { mapState } from 'vuex';
+const now = new Date(2019, 3, 27);
+const nowSeconds = now.getTime() / 1000;
 
 export default {
   name: 'results',
   computed: {
     ...mapState(['users', 'currentUser']),
     preparedUsers() {
-      const doneUsers = this.users.filter(user => user.hasCompleted);
+      const doneUsers = this.users.filter(user => {
+        return user.hasCompleted && user.timeCompleted.seconds > nowSeconds;
+      });
       return doneUsers.sort((a, b) => {
         if (a.score !== b.score) return b.score - a.score;
         return a.timeCompleted.seconds - a.timeStarted.seconds - (b.timeCompleted.seconds - b.timeStarted.seconds);
