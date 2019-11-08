@@ -38,7 +38,7 @@ export default new Vuex.Store({
     },
     token: localStorage.getItem('user-token') || null,
     isFetching: false,
-    questionType: '',
+    questionType: 'frontend',
     questionNumber: 0,
     multipliers: {
       EASY: 1,

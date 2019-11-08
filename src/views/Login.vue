@@ -2,16 +2,16 @@
   <div class="login-wrapper">
     <form class="login-form" @submit.prevent="login">
       <h1>Вход</h1>
-      <div class="form__row form__row--radio">
-        <div class="radio">
-          <input type="radio" name="type-input" id="frontend" @change="changeType('frontend')" />
-          <label for="frontend" class="login-form-type">Frontend</label>
-        </div>
-        <div class="radio">
-          <input type="radio" name="type-input" id="backend" @change="changeType('backend')" />
-          <label for="backend" class="login-form-type">Backend</label>
-        </div>
-      </div>
+      <!--      <div class="form__row form__row&#45;&#45;radio">-->
+      <!--        <div class="radio">-->
+      <!--          <input type="radio" name="type-input" id="frontend" @change="changeType('frontend')" />-->
+      <!--          <label for="frontend" class="login-form-type">Frontend</label>-->
+      <!--        </div>-->
+      <!--        <div class="radio">-->
+      <!--          <input type="radio" name="type-input" id="backend" @change="changeType('backend')" />-->
+      <!--          <label for="backend" class="login-form-type">Backend</label>-->
+      <!--        </div>-->
+      <!--      </div>-->
       <div class="form__row">
         <input required v-model="username" type="text" placeholder="Имя" />
       </div>
